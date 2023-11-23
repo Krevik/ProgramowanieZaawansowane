@@ -1,0 +1,38 @@
+﻿user: api-chat
+pass: N7kGKim8yvnO
+
+jdbc:postgresql://ep-winter-frost-319921.eu-central-1.aws.neon.tech/chat-dev?user=api-chat&password=N7kGKim8yvnO&sslmode=require
+
+
+// Do not expose your Neon credentials to the browser
+// .env
+PGHOST='ep-winter-frost-319921.eu-central-1.aws.neon.tech'
+PGDATABASE='chat-dev'
+PGUSER='api-chat'
+PGPASSWORD='************'
+ENDPOINT_ID='ep-winter-frost-319921'
+
+// app.js
+const postgres = require('postgres');
+require('dotenv').config();
+
+let { PGHOST, PGDATABASE, PGUSER, PGPASSWORD, ENDPOINT_ID } = process.env;
+
+const sql = postgres({
+  host: PGHOST,
+  database: PGDATABASE,
+  username: PGUSER,
+  password: PGPASSWORD,
+  port: 5432,
+  ssl: 'require',
+  connection: {
+    options: `project=${ENDPOINT_ID}`,
+  },
+});
+
+async function getPgVersion() {
+  const result = await sql`select version()`;
+  console.log(result);
+}
+
+getPgVersion();
